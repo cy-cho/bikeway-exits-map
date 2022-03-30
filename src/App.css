@@ -1,4 +1,4 @@
-.App {
+/* .App {
   text-align: center;
 }
 
@@ -35,4 +35,17 @@
   to {
     transform: rotate(360deg);
   }
+} */
+
+.leaflet-container {
+  width: 100%;
+  height: calc(100vh - 56px);
+  margin-top: 56px;
 }
+
+@media (min-width: 768px) {
+  .leaflet-container {
+    height: calc(100vh - 80px);
+    margin-top: 80px;
+  }
+} ;
