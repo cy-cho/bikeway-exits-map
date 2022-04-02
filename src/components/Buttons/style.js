@@ -3,12 +3,18 @@ import styled from "styled-components";
 // basic default button style
 const Button = styled.button`
   min-width: 88px;
-  padding: 4px 12px;
+  padding: 8px 12px;
   font-size: 16px;
   font-weight: 700;
   line-height: 150%;
   border-radius: 4px;
   border: none;
+  cursor: pointer;
+
+  :hover {
+    color: ${(props) => props.theme.colors.light};
+    background-color: ${(props) => props.theme.colors.tint};
+  }
 
   @media (min-width: 415px) {
     min-width: 96px;

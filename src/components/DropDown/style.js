@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 // dropdown container
 export const DropDownContainer = styled.div`
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -11,7 +12,11 @@ export const DropDownContainer = styled.div`
   background-color: ${(props) => props.theme.colors.white};
   border-radius: 4px;
   border: 1px solid ${(props) => props.theme.colors.primary};
-  curosr: pointer;
+  cursor: pointer;
+
+  :hover {
+    background-color: ${(props) => props.theme.colors.tint};
+  }
 `;
 
 export const DropDownHeader = styled.div`
@@ -23,17 +28,21 @@ export const DropDownIcon = styled.img`
   flex-shrink: 0;
   width: 24px;
   height: 24px;
+  transform: rotate(${(props) => props.rotate}deg);
+  transition: all 0.3s ease-in-out;
 `;
 
 // dropdown list
 export const DropDownListContainer = styled.div`
   position: absolute;
   top: 45px;
-  left: 0 px;
-  width: 186px;
+  left: 0;
+  z-index: 99;
+  width: 100%;
+  max-height: 283px; /* header height + items height */
+  overflow-y: overlay;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   border-radius: 4px;
   border: 1px solid ${(props) => props.theme.colors.primary};
@@ -47,9 +56,13 @@ export const DropDownList = styled.div`
   padding: 8px 24px;
 `;
 export const ListItem = styled.div`
-  width: -webkit-fill-available;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 150%;
   text-align: center;
-  padding: 8px 24px;
+  padding: 8px 0;
+  cursor: pointer;
 
   :hover {
     background-color: ${(props) => props.theme.colors.tint};

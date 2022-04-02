@@ -2,8 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   position: relative;
-  width: 100vw;
-  height: 100vh;
+  width: calc(100vw - 8px); /* substract scrollbar width */
   overflow: hidden;
 `;
 

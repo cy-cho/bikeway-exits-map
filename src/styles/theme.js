@@ -2,7 +2,7 @@ const theme = {
   colors: {
     // primary colors
     tint: "#F0F9FC",
-    light: "#0E5978",
+    light: "#12749D",
     primary: "#0E5978",
     dark: "#0A4259",
     // notify colors

@@ -32,9 +32,11 @@ export const ButtonWrapper = styled.div`
   justify-content: center;
   align-items: center;
   flex-grow: 1;
+  column-gap: 4px;
 
   @media (min-width: 768px) {
     justify-content: end;
+    column-gap: 12px;
   }
 `;
 

@@ -1,14 +1,13 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import propTypes from "prop-types";
 import { NavContainer, Logo, ButtonWrapper, Search } from "./style";
 import logoIcon from "../../assets/logo.svg";
 import searchIcon from "../../assets/search.svg";
 
 import { Button, SelectedButton } from "../Buttons/index";
 
-function Nav() {
+function Nav({ searchMode, setSearchMode }) {
   const navigate = useNavigate();
-  const [searchMode, setSearchMode] = useState("");
   const isSearchingBike = searchMode === "bike";
   const isSearchingRoute = searchMode === "route";
   return (
@@ -21,16 +20,24 @@ function Nav() {
           <Button onClick={() => setSearchMode("bike")}>尋找單車</Button>
         )}
         {isSearchingRoute ? (
-          <SelectedButton ml={16}>尋找車道</SelectedButton>
+          <SelectedButton>尋找車道</SelectedButton>
         ) : (
-          <Button ml={16} onClick={() => setSearchMode("route")}>
-            尋找車道
-          </Button>
+          <Button onClick={() => setSearchMode("route")}>尋找車道</Button>
         )}
       </ButtonWrapper>
       <Search alt="search" src={searchIcon} />
     </NavContainer>
   );
 }
+
+Nav.propTypes = {
+  searchMode: propTypes.string,
+  setSearchMode: propTypes.func,
+};
+
+Nav.defaultProps = {
+  searchMode: "",
+  setSearchMode: () => {},
+};
 
 export default Nav;
