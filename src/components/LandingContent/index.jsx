@@ -1,28 +1,22 @@
-import { useRef } from "react";
-import propTypes from "prop-types";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Container, Content, Logo, Title, ButtonWrapper } from "./style";
+import { Container, Content, Logo, Title, FullButtonWrapper } from "./style";
 import { SearchButton } from "../Buttons/index";
-import DropDown from "../DropDown/index";
+import DropDown, { DropDownList, ListItem } from "../DropDown/index";
 import SearchBar from "../SearchBar/index";
 import logoIcon from "../../assets/logo.svg";
 import TAIWAN_CITIES from "../../utils/taiwan_cities.json";
 
-function LandingContent({ searchMode }) {
+function LandingContent() {
   const navigate = useNavigate();
-  const cityRef = useRef();
+  const [selectedCity, setSelectedCity] = useState("");
   const onSearch = () => {
-    const selectedCity = cityRef.current.getCity();
-    if (!searchMode) {
-      alert("尚未選擇尋找類型");
-      return;
-    }
     if (!selectedCity) {
       alert("尚未選擇尋找縣市");
       return;
     }
     // do something
-    navigate("/map");
+    navigate("/search-bikes");
   };
   return (
     <Container>
@@ -30,28 +24,26 @@ function LandingContent({ searchMode }) {
         <Logo alt="logo" src={logoIcon} />
         <Title>{"尋找單車,\r\n來場悠閒的放鬆之旅!"}</Title>
         <SearchBar />
-        <ButtonWrapper>
-          <DropDown
-            ref={cityRef}
-            title="縣市"
-            data={TAIWAN_CITIES}
-            style={{ width: "100%" }}
-          />
+        <FullButtonWrapper>
+          <DropDown title="縣市" select={selectedCity}>
+            {TAIWAN_CITIES.map((item) => (
+              <div key={item.area} style={{ width: "100%" }}>
+                <DropDownList>{item.area}</DropDownList>
+                {item.city.map((city) => (
+                  <ListItem key={city} onClick={() => setSelectedCity(city)}>
+                    {city}
+                  </ListItem>
+                ))}
+              </div>
+            ))}
+          </DropDown>
           <SearchButton style={{ width: "100%" }} onClick={onSearch}>
             搜尋
           </SearchButton>
-        </ButtonWrapper>
+        </FullButtonWrapper>
       </Content>
     </Container>
   );
 }
-
-LandingContent.propTypes = {
-  searchMode: propTypes.string,
-};
-
-LandingContent.defaultProps = {
-  searchMode: "",
-};
 
 export default LandingContent;

@@ -1,22 +1,22 @@
-import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import { Container } from "./style";
 
 import Nav from "../../components/Nav/index";
 import Home from "../Home/index";
-import Map from "../Map/index";
+import BikeMap from "../BikeMap/index";
+import RouteMap from "../RouteMap/index";
 
 function MainLayout() {
-  const [searchMode, setSearchMode] = useState("");
-  return (
-    <Container>
-      <Nav searchMode={searchMode} setSearchMode={setSearchMode} />
-      <Routes>
-        <Route path="/map" element={<Map />} />
-        <Route path="/" element={<Home searchMode={searchMode} />} />
-      </Routes>
-    </Container>
-  );
+    return (
+        <Container>
+            <Nav />
+            <Routes>
+                <Route path="/search-bikes" element={<BikeMap />} />
+                <Route path="/search-routes" element={<RouteMap />} />
+                <Route path="/" element={<Home />} />
+            </Routes>
+        </Container>
+    );
 }
 
 export default MainLayout;

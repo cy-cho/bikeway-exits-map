@@ -1,6 +1,7 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import ControlMenu from "../../components/ControlMenu/index";
 
-function Map() {
+function RouteMap() {
   return (
     <MapContainer center={[25.023, 121.46]} zoom={17}>
       <TileLayer
@@ -12,8 +13,9 @@ function Map() {
           A pretty CSS3 popup. <br /> Easily customizable.
         </Popup>
       </Marker>
+      <ControlMenu />
     </MapContainer>
   );
 }
 
-export default Map;
+export default RouteMap;

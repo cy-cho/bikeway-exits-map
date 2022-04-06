@@ -1,60 +1,46 @@
-import { useState, forwardRef, useImperativeHandle } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import {
-  DropDownContainer,
-  DropDownHeader,
-  DropDownIcon,
-  DropDownListContainer,
-  DropDownList,
-  ListItem,
+    DropDownContainer,
+    DropDownHeader,
+    DropDownIcon,
+    DropDownListContainer,
+    DropDownList,
+    ListItem,
 } from "./style";
 import downIcon from "../../assets/dropdown/down.svg";
 
-const DropDown = forwardRef(({ title, data, onSelect }, ref) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedCity, setSelectedCity] = useState("");
+function DropDown({ title, select, children }) {
+    const [isOpen, setIsOpen] = useState(false);
 
-  const toggleDropDown = () => setIsOpen(!isOpen);
+    const toggleDropDown = () => setIsOpen(!isOpen);
 
-  useImperativeHandle(ref, () => ({
-    getCity: () => {
-      return selectedCity;
-    },
-  }));
+    return (
+        <DropDownContainer onClick={toggleDropDown}>
+            <DropDownHeader>{select || title}</DropDownHeader>
+            <DropDownIcon
+                alt="arrow"
+                rotate={isOpen ? -180 : 0}
+                src={downIcon}
+            />
+            {isOpen && (
+                <DropDownListContainer>{children}</DropDownListContainer>
+            )}
+        </DropDownContainer>
+    );
+}
 
-  return (
-    <DropDownContainer ref={ref} onClick={toggleDropDown}>
-      <DropDownHeader>{selectedCity || title}</DropDownHeader>
-      <DropDownIcon alt="arrow" rotate={isOpen ? -180 : 0} src={downIcon} />
-      {isOpen && (
-        <DropDownListContainer>
-          {data.map((item) => (
-            <div key={item.area} style={{ width: "100%" }}>
-              <DropDownList onClick={onSelect}>{item.area}</DropDownList>
-              {item.city.map((city) => (
-                <ListItem key={city} onClick={() => setSelectedCity(city)}>
-                  {city}
-                </ListItem>
-              ))}
-            </div>
-          ))}
-        </DropDownListContainer>
-      )}
-    </DropDownContainer>
-  );
-});
-
-DropDown.displayName = "DropDown";
 DropDown.propTypes = {
-  title: PropTypes.string,
-  data: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  onSelect: PropTypes.func,
+    title: PropTypes.string,
+    select: PropTypes.string,
+    children: PropTypes.instanceOf,
 };
 
 DropDown.defaultProps = {
-  title: "選單",
-  data: [],
-  onSelect: () => {},
+    title: "選單",
+    select: "",
+    children: null,
 };
 
+export { DropDownList, ListItem };
 export default DropDown;

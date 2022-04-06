@@ -46,7 +46,7 @@ export const Title = styled.h2`
   white-space: pre-wrap;
 `;
 
-export const ButtonWrapper = styled.div`
+export const FullButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
