@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { useState } from "react";
 import {
     Container,
@@ -13,9 +14,15 @@ import { SearchButton } from "../Buttons/index";
 import TAIWAN_CITIES from "../../utils/taiwan_cities.json";
 import downIcon from "../../assets/dropdown/down.svg";
 
-function SearchCard() {
-    const [selectedCity, setSelectedCity] = useState("");
+function SearchCard({
+    setOpenSelection,
+    selectedCity,
+    setSelectedCity,
+    refetch,
+}) {
+    // const [selectedCity, setSelectedCity] = useState("");
     const [openSearchDetail, setOpenSearchDetail] = useState(true);
+
     return (
         <Container show={openSearchDetail}>
             <HeaderBlock />
@@ -31,26 +38,41 @@ function SearchCard() {
             <ContentWrapper show={openSearchDetail}>
                 <SearchBar />
                 <FullButtonWrapper>
-                    <DropDown title="縣市" select={selectedCity}>
+                    <DropDown title="縣市" select={selectedCity.text}>
                         {TAIWAN_CITIES.map((item) => (
                             <div key={item.area} style={{ width: "100%" }}>
                                 <DropDownList>{item.area}</DropDownList>
                                 {item.city.map((city) => (
                                     <ListItem
-                                        key={city}
+                                        key={city.value}
                                         onClick={() => setSelectedCity(city)}
                                     >
-                                        {city}
+                                        {city.text}
                                     </ListItem>
                                 ))}
                             </div>
                         ))}
                     </DropDown>
-                    <SearchButton style={{ width: "100%" }}>搜尋</SearchButton>
+                    <SearchButton
+                        style={{ width: "100%" }}
+                        onClick={() => {
+                            setOpenSelection(true);
+                            refetch();
+                        }}
+                    >
+                        搜尋
+                    </SearchButton>
                 </FullButtonWrapper>
             </ContentWrapper>
         </Container>
     );
 }
+
+SearchCard.propTypes = {
+    setOpenSelection: PropTypes.func.isRequired,
+    selectedCity: PropTypes.oneOf([PropTypes.object]).isRequired,
+    setSelectedCity: PropTypes.func.isRequired,
+    refetch: PropTypes.func.isRequired,
+};
 
 export default SearchCard;

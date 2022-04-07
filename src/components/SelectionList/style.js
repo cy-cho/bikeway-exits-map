@@ -46,3 +46,8 @@ export const StatusWrapper = styled.div`
     margin: 12px 0 0;
     column-gap: 12px;
 `;
+
+export const LoadingOrErrorText = styled.h5`
+    text-align: center;
+    margin: 12px auto;
+`;

@@ -33,13 +33,12 @@ function DropDown({ title, select, children }) {
 DropDown.propTypes = {
     title: PropTypes.string,
     select: PropTypes.string,
-    children: PropTypes.instanceOf,
+    children: PropTypes.node.isRequired,
 };
 
 DropDown.defaultProps = {
     title: "選單",
     select: "",
-    children: null,
 };
 
 export { DropDownList, ListItem };

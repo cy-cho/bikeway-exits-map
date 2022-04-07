@@ -7,73 +7,124 @@ import {
     AddressIcon,
     Address,
     StatusWrapper,
+    LoadingOrErrorText,
 } from "./style";
 import {
     AvailableTag,
     UnavailableTag,
     SuspendTag,
-    // FullTag,
+    FullTag,
     // CategoryTag,
 } from "../Tags/index";
 import addressIcon from "../../assets/selection/location.svg";
 
-const SERVICE_TYPE = {
-    0: "正常營運",
-    1: "暫停營運",
-    2: "停止營運",
+const SERVICE_STATUS = {
+    0: "停止營運",
+    1: "正常營運",
+    2: "暫停營運",
 };
-function SelectionList({ data }) {
-    const serviceTag = (status) => {
-        let component = null;
-        switch (status) {
-            case 0:
-                component = <AvailableTag>{SERVICE_TYPE[status]}</AvailableTag>;
-                break;
-            case 1:
-                component = (
-                    <UnavailableTag>{SERVICE_TYPE[status]}</UnavailableTag>
-                );
-                break;
-            case 2:
-                component = <SuspendTag>{SERVICE_TYPE[status]}</SuspendTag>;
-                break;
-            default:
-                break;
-        }
-        return component;
-    };
+const serviceTag = (data, id) => {
+    let componentType = null;
+    let componentAmount = null;
+    const {
+        ServiceStatus = 0,
+        AvailableRentBikes = 0,
+        AvailableReturnBikes = 0,
+    } = data.find((station) => station.StationUID === id);
+
+    switch (ServiceStatus) {
+        case 0:
+            componentType = (
+                <SuspendTag>{SERVICE_STATUS[ServiceStatus]}</SuspendTag>
+            );
+            break;
+        case 1:
+            componentType = (
+                <AvailableTag>{SERVICE_STATUS[ServiceStatus]}</AvailableTag>
+            );
+            break;
+        case 2:
+            componentType = (
+                <UnavailableTag>{SERVICE_STATUS[ServiceStatus]}</UnavailableTag>
+            );
+            break;
+        default:
+            break;
+    }
+
+    if (AvailableReturnBikes === 0) {
+        componentAmount = <FullTag>車位已滿</FullTag>;
+    } else if (AvailableRentBikes === 0) {
+        componentAmount = <UnavailableTag>已無單車</UnavailableTag>;
+    } else {
+        componentAmount = <AvailableTag>尚有單車</AvailableTag>;
+    }
+    return (
+        <>
+            {componentType}
+            {componentAmount}
+        </>
+    );
+};
+function SelectionList({
+    availableBikeData,
+    stationData,
+    isLoading,
+    isError,
+    isSuccess,
+    isFetching,
+}) {
+    if (isLoading || isFetching) {
+        return (
+            <Container>
+                <LoadingOrErrorText>站位搜尋中...</LoadingOrErrorText>
+            </Container>
+        );
+    }
+    if (isError) {
+        return (
+            <Container>
+                <LoadingOrErrorText>該縣市目前尚無站位資訊</LoadingOrErrorText>
+            </Container>
+        );
+    }
+
     return (
         <Container>
-            <Card>
-                <CardHeader>iBike1.0_逢甲大學</CardHeader>
-                <CardAddressWrapper>
-                    <AddressIcon alt="address" src={addressIcon} />
-                    <Address>台中市福星路/逢甲路口(潮洋機車停車場)</Address>
-                </CardAddressWrapper>
-                <StatusWrapper>{serviceTag(1)}</StatusWrapper>
-            </Card>
-            {data.map((item) => (
-                <Card key={item.StationID}>
-                    <h5>{item.StationName.Zh_tw}</h5>
-                    <CardAddressWrapper>
-                        <AddressIcon alt="address" src={addressIcon} />
-                        <Address>{item.StationAddress.Zh_tw}</Address>
-                    </CardAddressWrapper>
-                    <StatusWrapper>
-                        {serviceTag(item.ServiceType)}
-                    </StatusWrapper>
-                </Card>
-            ))}
+            {isSuccess &&
+                stationData.map((item) => (
+                    <Card key={item.StationID}>
+                        <CardHeader>{item.StationName.Zh_tw}</CardHeader>
+
+                        <CardAddressWrapper>
+                            <AddressIcon alt="address" src={addressIcon} />
+                            <Address>{item.StationAddress.Zh_tw}</Address>
+                        </CardAddressWrapper>
+                        <StatusWrapper>
+                            {availableBikeData.length > 0 &&
+                                serviceTag(availableBikeData, item.StationUID)}
+                        </StatusWrapper>
+                    </Card>
+                ))}
         </Container>
     );
 }
 
 SelectionList.propTypes = {
-    data: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+    stationData: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    availableBikeData: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+    isLoading: PropTypes.bool,
+    isError: PropTypes.bool,
+    isSuccess: PropTypes.bool,
+    isFetching: PropTypes.bool,
 };
 
 SelectionList.defaultProps = {
-    data: [],
+    stationData: [],
+    availableBikeData: [],
+    isLoading: false,
+    isError: false,
+    isSuccess: false,
+    isFetching: false,
 };
-
 export default SelectionList;
