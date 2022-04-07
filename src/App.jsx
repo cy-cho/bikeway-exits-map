@@ -6,13 +6,13 @@ import theme from "./styles/theme";
 import MainLayout from "./pages/MainLayout/index";
 
 function App() {
-  return (
-    <ThemeProvider theme={theme}>
-      <Router>
-        <MainLayout />
-      </Router>
-    </ThemeProvider>
-  );
+    return (
+        <ThemeProvider theme={theme}>
+            <Router>
+                <MainLayout />
+            </Router>
+        </ThemeProvider>
+    );
 }
 
 export default App;

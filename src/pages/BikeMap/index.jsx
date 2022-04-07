@@ -1,19 +1,23 @@
 import { useState } from "react";
+import "leaflet/dist/leaflet.css";
+import "react-leaflet-markercluster/dist/styles.min.css";
+import MarkerClusterGroup from "react-leaflet-markercluster";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useQuery } from "react-query";
-
+import { bikeIcon, selectedIcon } from "./style";
 import ControlMenu from "../../components/ControlMenu/index";
 import SideSelection from "../../components/SideSelection";
+import StationPopup from "../../components/StationPopup";
 import getHeaderSetting from "../../utils/setAuthorizationHeader";
 
 const headerSetting = getHeaderSetting();
-const fetchStationData = async (page, city) => {
+const fetchStationData = async (city) => {
     // fetch 20 rows per time (fixed)
-    const top = 20;
+    // const top = 20;
     // remove data of previous page
-    const skip = parseInt(top * (+page - 1), 10);
+    // const skip = parseInt(top * (+page - 1), 10);
     const res = await fetch(
-        `${process.env.REACT_APP_PTX_BASE_URL}Bike/Station/${city}?$top=${top}&$skip=${skip}&$format=JSON`,
+        `${process.env.REACT_APP_PTX_BASE_URL}Bike/Station/${city}?$format=JSON`,
         {
             method: "GET",
             headers: headerSetting,
@@ -26,13 +30,13 @@ const fetchStationData = async (page, city) => {
     return res.json();
 };
 
-const fetchAvailableBikeData = async (page, city) => {
+const fetchAvailableBikeData = async (city) => {
     // fetch 20 rows per time (fixed)
-    const top = 20;
+    // const top = 20;
     // remove data of previous page
-    const skip = parseInt(top * (+page - 1), 10);
+    // const skip = parseInt(top * (+page - 1), 10);
     const res = await fetch(
-        `${process.env.REACT_APP_PTX_BASE_URL}Bike/Availability/${city}?$top=${top}&$skip=${skip}&$format=JSON`,
+        `${process.env.REACT_APP_PTX_BASE_URL}Bike/Availability/${city}?$format=JSON`,
         {
             method: "GET",
             headers: headerSetting,
@@ -60,8 +64,8 @@ function BikeMap() {
     const { data: availableBikeData = [], refetch: refetchAvailableBikeData } =
         useQuery(
             // key and other dependencies
-            ["availableBike", page],
-            () => fetchAvailableBikeData(page, selectedCity.value),
+            ["availableBike"],
+            () => fetchAvailableBikeData(selectedCity.value),
             queryOptions,
         );
 
@@ -76,8 +80,8 @@ function BikeMap() {
         refetch: refetchStationData,
     } = useQuery(
         // key and other dependencies
-        ["station", page],
-        () => fetchStationData(page, selectedCity.value),
+        ["station"],
+        () => fetchStationData(selectedCity.value),
         queryOptions,
     );
 
@@ -88,18 +92,38 @@ function BikeMap() {
 
     return (
         <div>
-            <MapContainer center={[25.023, 121.46]} zoom={17}>
+            <MapContainer
+                center={[25.023, 121.46]}
+                zoom={17}
+                zoomControl={false}
+            >
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url={`${process.env.REACT_APP_MAPBOX_STYLE}tiles/256/{z}/{x}/{y}@2x?access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`}
                 />
-                <Marker position={[51.505, -0.09]}>
-                    <Popup>
-                        A pretty CSS3 popup. <br /> Easily customizable.
-                    </Popup>
-                </Marker>
+                <MarkerClusterGroup>
+                    {isSuccess &&
+                        stationData.map((station) => (
+                            <Marker
+                                key={station.StationUID}
+                                icon={bikeIcon}
+                                position={[
+                                    station.StationPosition.PositionLat,
+                                    station.StationPosition.PositionLon,
+                                ]}
+                            >
+                                <Popup>
+                                    <StationPopup
+                                        stationData={stationData}
+                                        availableBikeData={availableBikeData}
+                                    />
+                                </Popup>
+                            </Marker>
+                        ))}
+                </MarkerClusterGroup>
+
+                <ControlMenu />
             </MapContainer>
-            <ControlMenu />
             <SideSelection
                 isLoading={isLoading}
                 isError={isError}
